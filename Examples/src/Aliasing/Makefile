@@ -49,7 +49,7 @@ clean:
 
 distclean:
 	$(MAKE) clean
-	$(RM) -r -f ./doc
+	$(RM) -f ./doc $(DEPEND)
 	$(RM) *.out *.bak *~
 
 doc:
@@ -59,10 +59,11 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 

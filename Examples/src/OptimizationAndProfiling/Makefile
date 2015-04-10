@@ -53,17 +53,17 @@ esempioExtAss: esempioExtAss.o rational.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DNDEBUG $(LDFLAGS) $(LDLIBS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
 unroll: chrono.o
-	$(CXX) -S -O unroll1.cpp
+	$(CXX) -S -O0 unroll1.cpp
 	mv unroll1.s unroll1_nounroll.s	
 	$(CXX) -o unroll1_nounroll  -O unroll1.cpp chrono.o
-	$(CXX) -S -O -funroll-loops  unroll1.cpp
+	$(CXX) -S -O0 -funroll-loops  unroll1.cpp
 	mv unroll1.s unroll1_unroll.s
 	$(CXX) -o  unroll1_unroll -O -funroll-loops unroll1.cpp  chrono.o
 
 
 clean:
 	$(RM) -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat 
-	$(RM) -f esempioExtAss_debug  esempioExtAss_relase *.txt unroll1_nounroll unroll1_unroll
+	$(RM) -f esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll
 
 distclean: clean
 
@@ -71,9 +71,14 @@ optimize: chrono.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -I. -O2 -o esempio2 esempio.cpp chrono.o
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS) -I. -O3 -ffast-math  -funroll-loops -msse4 -mfpmath=sse -o esempio3 esempio.cpp chrono.o
-	@echo "\n**version with -O0"; ./esempio0;
-	@echo "\n\n**version with -O2"; ./esempio2; 
-	@echo "\n\n**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
+	@echo
+	@echo "**version with -O0"; ./esempio0;
+	@echo
+	@echo
+	@echo "**version with -O2"; ./esempio2; 
+	@echo
+	@echo
+	@echo "**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
 debug:
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio0_debug esempio.cpp chrono.cpp
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio1_debug esempio_errore.cpp chrono.cpp
